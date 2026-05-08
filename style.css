@@ -54,10 +54,11 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 200px;
+    height: 250px;
     z-index: 2;
     pointer-events: none;
     overflow: hidden;
+    background: linear-gradient(to top, rgba(20, 60, 20, 0.8) 0%, rgba(26, 26, 26, 0) 100%);
 }
 
 .rose-layer {
@@ -76,11 +77,17 @@ body {
     transform: scale(0);
     animation: grow 1.5s ease-out forwards;
     filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.6));
-
-    margin: 0 -15px;
-
+    margin: 0 -10px;
 }
 
+.grass-img {
+    flex-shrink: 0;
+    opacity: 0;
+    transform-origin: bottom center;
+    animation: grow 1.5s ease-out forwards;
+    margin: 0 -20px;
+    object-fit: contain;
+}
 
 @keyframes grow {
     0% {
@@ -102,37 +109,99 @@ body {
 .game-item-container {
     position: relative;
     z-index: 3;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#read-letter-btn {
-    background: linear-gradient(135deg, #ff5faa 0%, #6b19e6 100%);
-    border: none;
-    border-radius: 12px;
-    padding: 20px 40px;
-    color: #fff;
+.envelope-wrapper {
     cursor: pointer;
-    box-shadow: 0 0 30px rgba(250, 95, 255, 0.6);
-    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.envelope-wrapper:hover {
+    transform: translateY(-10px) scale(1.05);
+}
+
+.envelope {
+    width: 180px;
+    height: 120px;
+    background-color: #d1a15e;
+    position: relative;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 15px 35px rgba(209, 161, 94, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.envelope::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 90px solid transparent;
+    border-right: 90px solid transparent;
+    border-top: 70px solid #e8bc7d;
+    z-index: 3;
+    transform-origin: top;
+    transition: transform 0.4s ease, z-index 0.4s;
+}
+
+.envelope::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 90px solid #c4924b;
+    border-right: 90px solid #c4924b;
+    border-bottom: 60px solid #b88640;
+    border-radius: 0 0 8px 8px;
+    z-index: 2;
+}
+
+.envelope-wrapper:hover .envelope::before {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+.envelope-paper {
+    position: absolute;
+    top: 10px;
+    width: 140px;
+    height: 90px;
+    background-color: #fff;
+    border-radius: 4px;
+    z-index: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-#read-letter-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 50px rgba(180, 95, 255, 0.6);
+.envelope-paper .icon {
+    font-size: 2rem;
+    margin-bottom: 5px;
 }
 
-#read-letter-btn .icon {
-    font-size: 3rem;
+.envelope-paper .text {
+    color: #1a1a1a;
+    font-family: 'Cinzel Decorative', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
 }
 
-#read-letter-btn .text {
-    font-weight: bold;
-    font-size: 1.2rem;
-    letter-spacing: 1.5px;
+.envelope-wrapper:hover .envelope-paper {
+    transform: translateY(-40px);
+    z-index: 2;
 }
 
 #modal-overlay {
@@ -141,7 +210,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(0, 0, 0, 0.9);
     z-index: 100;
     display: flex;
     justify-content: center;
@@ -157,22 +226,23 @@ body {
 }
 
 #modal-content {
-    background-color: #1a1b1c;
-    width: 90%;
+    background-color: #1f2022;
+    width: calc(100% - 40px);
     max-width: 500px;
     border: 2px solid #d1a15e;
     border-radius: 8px;
-    box-shadow: 0 0 50px rgba(209, 161, 94, 0.3);
-    padding: 20px;
+    box-shadow: 0 0 50px rgba(209, 161, 94, 0.2);
+    padding: 35px 25px;
     position: relative;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
-    transform: scale(0.8);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overscroll-behavior: contain;
+    transform: translateY(20px);
+    transition: transform 0.3s ease-out;
 }
 
 #modal-overlay.show #modal-content {
-    transform: scale(1);
+    transform: translateY(0);
 }
 
 #close-modal {
@@ -184,51 +254,24 @@ body {
     border: none;
     color: #d1a15e;
     cursor: pointer;
-    transition: color 0.2s, transform 0.3s;
+    transition: color 0.2s;
     z-index: 101;
 }
 
 #close-modal:hover {
     color: #fff;
-    transform: rotate(90deg);
-}
-
-.modal-image-container {
-    width: 100%;
-    margin-bottom: 25px;
-    border-radius: 6px;
-    overflow: hidden;
-    position: relative;
-}
-
-
-.modal-image-container::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, #d1a15e, transparent);
-}
-
-.modal-image-container img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    display: block;
 }
 
 .modal-text-container {
     text-align: center;
-    padding: 0 15px;
 }
 
 .modal-text-container h2 {
     font-family: 'Cinzel Decorative', serif;
     color: #d1a15e;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     letter-spacing: 2px;
+    font-size: 1.8rem;
 }
 
 .letter-body {
@@ -241,12 +284,12 @@ body {
 }
 
 .letter-body p {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .letter-footer {
     border-top: 1px solid rgba(209, 161, 94, 0.3);
-    padding-top: 20px;
+    padding-top: 25px;
 }
 
 .letter-footer .salutation {
@@ -255,42 +298,37 @@ body {
     color: #d1a15e;
     margin-bottom: 10px;
     letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .letter-footer .signature {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     color: #fff;
     font-family: 'Cinzel Decorative', serif;
+    text-transform: uppercase;
 }
 
 @media (max-width: 600px) {
     #roses-field {
-        height: 150px;
-
+        height: 200px;
     }
 
     #modal-content {
-        width: 95%;
-        padding: 15px;
-    }
-
-    #read-letter-btn {
-        padding: 15px 30px;
-    }
-
-    .modal-image-container img {
-        height: 200px;
+        padding: 30px 20px;
+        width: calc(100% - 30px);
     }
 
     .modal-text-container h2 {
         font-size: 1.5rem;
+        margin-bottom: 20px;
     }
 
     .letter-body {
         font-size: 0.95rem;
+        line-height: 1.6;
     }
 
     .letter-footer .signature {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 }
