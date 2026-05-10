@@ -71,7 +71,7 @@ function createParticle() {
 
     particle.innerHTML = '❤️';
     particle.style.left = Math.random() * 100 + 'vw';
-    particle.style.animationDelay = Math.random() * 2 + 's';
+    particle.style.left = Math.random() * 90 + 'vw';
     particle.style.animationDuration = Math.random() * 3 + 3 + 's';
     particle.style.fontSize = Math.random() * 1.5 + 0.8 + 'rem';
 
